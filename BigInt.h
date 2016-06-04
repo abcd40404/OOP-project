@@ -1,5 +1,5 @@
 #include <iostream>
-#include <algorithm> 
+#include <algorithm>
 #include <cstring>
 using namespace std;
 
@@ -13,9 +13,9 @@ class BigInt
     BigInt(int data);
     BigInt(const BigInt& num);
     ~BigInt();
-    int getCapacity();
-    int getUsed();
-    char *getDigit();
+    int getCapacity() const;
+    int getUsed() const;
+    char *getDigit() const;
     friend const BigInt operator *(const BigInt& num1, const BigInt& num2);
     friend const BigInt operator /(const BigInt& num1, const BigInt& num2);
     friend const BigInt operator %(const BigInt& num1, const BigInt& num2);
@@ -32,7 +32,7 @@ class BigInt
     void factorial(char *num);
     bool isNeg() const;
     void abs();
-    
+
     private:
     int capacity;
     int used;

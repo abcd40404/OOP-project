@@ -173,11 +173,11 @@ void normalize(BigInt& n, BigInt& d){
     n = n / gcd;
     d = d / gcd;
 
-    if(n < 0 && d < 0){
+    if(n.isNeg() && d.isNeg()){
         n = -n;
         d = -d;
     }
-    else if(n > 0 && d < 0){
+    else if(!n.isNeg() && d.isNeg()){
         n = -n;
         d = -d;
     }
@@ -193,6 +193,7 @@ const Rational operator +(const Rational& r1, const Rational& r2){
     gcd.abs();
 
     if(!n1.isNeg() && !n2.isNeg()){
+
         BigInt n(n1 * (d2 / gcd) + n2 * (d1 / gcd));
         BigInt d(d1 * d2 / gcd);
         return Rational(n, d);
