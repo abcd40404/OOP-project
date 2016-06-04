@@ -170,7 +170,7 @@ BigInt& Rational::operator [](int index){
 
 void normalize(BigInt& n, BigInt& d){
     BigInt gcd = GCD(n, d);
-    n = n / gcd;
+    n = n / gcd;;
     d = d / gcd;
 
     if(n.isNeg() && d.isNeg()){

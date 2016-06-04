@@ -197,6 +197,9 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
         neg2 = true;
         divisor.abs();
     }
+    if(len1 < divisor.used){
+        return BigInt(0);
+    }
     char *block = new char[num1.capacity];
     char *ans = new char[num1.capacity];
     int len(divisor.used);
@@ -209,10 +212,11 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
     }
     //get block
     for(int i = len1 - 1; block_idx < len; i--){
+        if(i < 0)
+            break;
         block[block_idx++] = num1.digit[i];
     }
     block[block_idx] = '\0';
-
     for(int i = len1 - len; i >= 0; i--){
         if(i != len1 - len){
             block[block_idx++] = num1.digit[i];
@@ -253,7 +257,7 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
                 lb = mid;
         }
         ans[ans_idx++] = lb + '0';
-
+        ans[ans_idx] = '\0';
         BigInt product;
         product = divisor * lb;
         temp = temp - product;
@@ -263,11 +267,18 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
             block[block_idx++] = temp.digit[j];
         }
         block[block_idx] = '\0';
-
     }
+
     return BigInt(ans);
 }
 const BigInt operator %(const BigInt& num1, const BigInt& num2){
+    if(num2 == BigInt(0)){
+        cout << "Illegal number\n";
+        exit(1);
+    }
+    if(num1 == BigInt(0)){
+        return BigInt(0);
+    }
     BigInt divisor(num2);
     int len1 = num1.used;
     bool neg1 = false, neg2 = false;
@@ -286,6 +297,8 @@ const BigInt operator %(const BigInt& num1, const BigInt& num2){
 
     //get block
     for(int i = len1 - 1; block_idx < len; i--){
+        if(i < 0)
+            break;
         block[block_idx++] = num1.digit[i];
     }
     block[block_idx] = '\0';
