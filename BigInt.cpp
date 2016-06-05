@@ -35,7 +35,7 @@ BigInt::BigInt(int data)
         digit[used++] = '-';
     delete [] temp;
 }
-BigInt::BigInt(char *num)
+BigInt::BigInt(const char *num)
 {
     int len = strlen(num);
     if(num[len-1] == '!')
@@ -83,6 +83,7 @@ BigInt::BigInt(char *num)
             used++;
         if(neg == 1)
             digit[used++] = '-';
+        digit[used] = '\0';
     }
 
 }
@@ -91,10 +92,7 @@ BigInt::BigInt(const BigInt& num)
     capacity = num.capacity;
     used = num.used;
     digit = new char [capacity];
-    for(int i=0;i< capacity;i++)
-       digit[i]='0';
-    for(int i=0; i < capacity; i++)
-        digit[i]=num.digit[i];
+    memcpy(digit, num.digit, sizeof(char) * capacity);
 }
 BigInt::~BigInt()
 {
@@ -125,7 +123,7 @@ ostream& operator <<(ostream& input, const BigInt& num)
 const BigInt operator *(const BigInt& num1, const BigInt& num2)
 {
     BigInt ans;
-    ans.capacity = num1.used + num2.used + 2;
+    ans.capacity = num1.used + num2.used + 10;
     delete [] ans.digit;
     ans.digit = new char[ans.capacity];
     for(int i=0; i < ans.capacity ;i++)
@@ -170,12 +168,13 @@ const BigInt operator *(const BigInt& num1, const BigInt& num2)
         {
             ans.used = i + 1;
             return ans;
-            break;
         }
     }
     if((num1.digit[num1.used-1] == '-' && num2.digit[num2.used-1] != '-')
-        ||(num1.digit[num1.used-1] != '-' && num2.digit[num2.used-1] == '-'))
+        ||(num1.digit[num1.used-1] != '-' && num2.digit[num2.used-1] == '-')){
         ans.digit[ans.used++] = '-';
+    }
+    ans.digit[ans.used] = '\0';
     return ans;
 }
 const BigInt operator /(const BigInt& num1, const BigInt& num2){
@@ -193,6 +192,7 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
         neg1 = true;
         len1--;
     }
+
     if(num2.digit[num2.used - 1] == '-'){
         neg2 = true;
         divisor.abs();
@@ -200,8 +200,8 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
     if(len1 < divisor.used){
         return BigInt(0);
     }
-    char *block = new char[num1.capacity];
-    char *ans = new char[num1.capacity];
+    char *block = new char[num1.capacity + 10];
+    char *ans = new char[num1.capacity + 10];
     int len(divisor.used);
     int block_idx(0);
     int ans_idx(0);
@@ -217,6 +217,7 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
         block[block_idx++] = num1.digit[i];
     }
     block[block_idx] = '\0';
+
     for(int i = len1 - len; i >= 0; i--){
         if(i != len1 - len){
             block[block_idx++] = num1.digit[i];
@@ -225,26 +226,13 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
         }
         BigInt temp(block);
 
-        if(divisor > temp){
-            if(i != len1 - len)
-                ans[ans_idx++] = '0';
-            if(i == 0)
-                break;
-
-            block[block_idx++] = num1.digit[i - 1];
-            block[block_idx] = '\0';
-            temp = BigInt(block);
-            i--;
-        }
-
-        int lb = 1, ub = 9;
+        int lb = 0, ub = 9;
         while(ub - lb > 1){
             // 1,0
-            if(divisor * ub <= temp){
+            if(temp >= (divisor * ub)){
                 lb = ub;
                 break;
             }
-
             if(divisor * lb > temp){
                 lb = 0;
                 break;
@@ -256,6 +244,7 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
             else
                 lb = mid;
         }
+
         ans[ans_idx++] = lb + '0';
         ans[ans_idx] = '\0';
         BigInt product;
@@ -268,7 +257,6 @@ const BigInt operator /(const BigInt& num1, const BigInt& num2){
         }
         block[block_idx] = '\0';
     }
-
     return BigInt(ans);
 }
 const BigInt operator %(const BigInt& num1, const BigInt& num2){
@@ -291,7 +279,7 @@ const BigInt operator %(const BigInt& num1, const BigInt& num2){
         divisor.abs();
     }
 
-    char *block = new char[num1.capacity];
+    char *block = new char[num1.capacity + 10];
     int len(divisor.used);
     int block_idx(0);
 
@@ -310,24 +298,13 @@ const BigInt operator %(const BigInt& num1, const BigInt& num2){
         }
         BigInt temp(block);
 
-        if(divisor > temp){
-            if(i == 0)
-                break;
-
-            block[block_idx++] = num1.digit[i - 1];
-            block[block_idx] = '\0';
-            temp = BigInt(block);
-            i--;
-        }
-
-        int lb = 1, ub = 9;
+        int lb = 0, ub = 9;
         while(ub - lb > 1){
             // 1,0
-            if(divisor * ub <= temp){
+            if(temp >= (divisor * ub)){
                 lb = ub;
                 break;
             }
-
             if(divisor * lb > temp){
                 lb = 0;
                 break;
@@ -441,6 +418,7 @@ const BigInt operator +(const BigInt& num1, const BigInt& num2)
     }
     if(neg == 1)
         ans.digit[ans.used++] = '-';
+    ans.digit[ans.used] = '\0';
      return ans;
 }
 const BigInt operator -(const BigInt& num1, const BigInt& num2)
@@ -525,6 +503,7 @@ const BigInt operator -(const BigInt& num1, const BigInt& num2)
             ans.digit[ans.used] = '-';
         ans.used++;
     }
+    ans.digit[ans.used] = '\0';
     return ans;
 }
 const BigInt operator -(const BigInt& num)
@@ -541,8 +520,8 @@ const BigInt operator -(const BigInt& num)
     }
     else
     {
-        ans.digit[ans.used] = '-';
-        ans.used = ans.used + 1;
+        ans.digit[ans.used++] = '-';
+        ans.digit[ans.used] = '\0';
     }
     return ans;
 }
@@ -642,15 +621,15 @@ bool BigInt::operator ==(const BigInt& num) const{
 BigInt& BigInt::operator =(BigInt num)
 {
     if(this == &num)
-    return *this;
+        return *this;
     else
     {
         capacity = num.capacity;
         used = num.used;
         delete [] digit;
         digit = new char [capacity];
-        for(int i=0;i < capacity ;i++)
-        digit[i] = num.digit[i];
+        for(int i=0; i < capacity; i++)
+            digit[i] = num.digit[i];
         return *this;
     }
 }
@@ -666,6 +645,7 @@ void BigInt::factorial(char *num)
         *this = *this * i;
     if(neg == 1)
         digit[used++] = '-';
+    digit[used] = '\0';
 }
 
 bool BigInt::isNeg() const{
@@ -677,7 +657,7 @@ bool BigInt::isNeg() const{
 
 void BigInt::abs() {
     if(this->digit[this->used - 1] == '-'){
-        this->digit[this->used - 1] == '\0';
+        this->digit[this->used - 1] = '\0';
         this->used--;
     }
 }

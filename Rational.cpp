@@ -25,6 +25,13 @@ Rational::Rational(BigInt wholeNumber){
     denominator = BigInt(1);
 };
 
+Rational::Rational(const Rational& object){
+    BigInt n(object.numerator);
+    BigInt d(object.denominator);
+    numerator = n;
+    denominator = d;
+}
+
 const BigInt Rational::getNumerator() const{
     return this->numerator;
 }
@@ -65,6 +72,19 @@ const bool operator ==(const Rational& r1, const Rational& r2){
     BigInt ad(r1.numerator * r2.denominator);
     BigInt cb(r1.denominator * r2.numerator);
     return (ad == cb);
+}
+
+Rational& Rational::operator =(const Rational& object){
+    if(this == &object){
+        return *this;
+    }
+    else{
+        BigInt n(object.numerator);
+        BigInt d(object.denominator);
+        numerator = n;
+        denominator = d;
+        return *this;
+    }
 }
 
 const bool Rational::operator <(const Rational& r){
@@ -170,9 +190,8 @@ BigInt& Rational::operator [](int index){
 
 void normalize(BigInt& n, BigInt& d){
     BigInt gcd = GCD(n, d);
-    n = n / gcd;;
+    n = n / gcd;
     d = d / gcd;
-
     if(n.isNeg() && d.isNeg()){
         n = -n;
         d = -d;
@@ -191,9 +210,7 @@ const Rational operator +(const Rational& r1, const Rational& r2){
     BigInt d2(r2.getDenominator());
     BigInt gcd(GCD(d1, d2));
     gcd.abs();
-
     if(!n1.isNeg() && !n2.isNeg()){
-
         BigInt n(n1 * (d2 / gcd) + n2 * (d1 / gcd));
         BigInt d(d1 * d2 / gcd);
         return Rational(n, d);
@@ -224,13 +241,14 @@ const Rational operator +(const Rational& r1, const Rational& r2){
 }
 
 const Rational operator -(const Rational& r1, const Rational& r2){
+    cout << -r2 << endl;
     Rational r(r1 + (-r2));
     return r;
 }
 
 const Rational operator -(const Rational& r){
-    BigInt d(r.getDenominator() * BigInt(-1));
-    return Rational(r.getNumerator(), d);
+    BigInt n(r.getNumerator() * BigInt("-1"));
+    return Rational(n, r.getDenominator());
 }
 
 BigInt GCD(BigInt a, BigInt b){

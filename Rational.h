@@ -4,6 +4,9 @@
 
 using namespace std;
 
+#ifndef R_H
+#define R_H
+
 class Rational{
     public:
         Rational();
@@ -19,6 +22,8 @@ class Rational{
         //Single parameter constructor
         //Precondition: None
         //Postcondition: numerator will be set by wholeNumber and denominator will be 1.
+        Rational(const Rational& object);
+
         const BigInt getNumerator() const;
         //Precondition: None
         //Postcondition: return object.numerator
@@ -47,6 +52,8 @@ class Rational{
         //Precondiction: friend function , two parameters
         //Postcondiction: return true if (a/b) == (c/d)
         //           else return fasle
+        Rational& operator =(const Rational& object);
+
         const bool operator <(const Rational& r);
         //operator '<' overloading
         //Precondiction: member function , one parameter
@@ -97,3 +104,4 @@ const Rational operator -(const Rational& r);
 BigInt GCD(BigInt a, BigInt b);
 //Precondiction: None
 //Postcondiction: return the Greatest Common Divisor of a and b.
+#endif
