@@ -509,9 +509,9 @@ const BigInt operator -(const BigInt& num1, const BigInt& num2)
 const BigInt operator -(const BigInt& num)
 {
     BigInt ans;
-    ans.capacity = num.capacity;
+    ans.capacity = num.capacity + 10;
     ans.used = num.used;
-    ans.digit = new char[num.capacity];
+    ans.digit = new char[ans.capacity];
     strcpy(ans.digit,num.digit);
     if(ans.digit[ans.used - 1] == '-')
     {

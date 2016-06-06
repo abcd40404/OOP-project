@@ -241,7 +241,6 @@ const Rational operator +(const Rational& r1, const Rational& r2){
 }
 
 const Rational operator -(const Rational& r1, const Rational& r2){
-    cout << -r2 << endl;
     Rational r(r1 + (-r2));
     return r;
 }
