@@ -1,3 +1,8 @@
+//Team No: 9
+//Name: 林秉辭
+//Student ID: 403410070
+//Dept: 資工系
+//Year: 大二
 #include <iostream>
 #include <cstdlib>
 #include "Rational.h"
